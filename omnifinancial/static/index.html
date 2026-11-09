@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniFinancial — Multimodal Intelligence Fleet (Google Gemini Competition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            terminal: '#090d16',
+            panel: '#101726',
+            card: '#161f33',
+            border: '#23304a',
+            primary: '#38bdf8',
+            emerald: '#10b981',
+            crimson: '#f43f5e',
+            amber: '#f59e0b',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-terminal text-slate-300 font-sans min-h-screen antialiased flex flex-col">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-border bg-panel/80 backdrop-blur-md px-6 py-4 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-sky-500/20">
+        Ω
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-white font-bold text-base tracking-tight">OmniFinancial</h1>
+          <span class="text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded">
+            Google Gemini 2.5 Fleet
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 font-mono">Multimodal SEC 10-K, Financial Vision & Earnings Audio Radar</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-3 text-xs">
+      <div class="hidden md:flex items-center space-x-2 bg-card px-3 py-1.5 rounded-lg border border-border">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-slate-300 font-mono">3 Multimodal Agents Online</span>
+      </div>
+      <div class="bg-amber-500/10 text-amber-300 border border-amber-500/20 px-3 py-1.5 rounded-lg font-mono font-bold">
+        $1,000,000 Global Competition
+      </div>
+      <a href="https://github.com/iamarifalam/omnifinancial-gemini" target="_blank" class="bg-primary/20 hover:bg-primary/30 text-sky-300 border border-primary/30 px-3 py-1.5 rounded-lg font-mono transition">
+        GitHub Source ↗
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Workstation Layout -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Controls Panel (5 cols) -->
+    <div class="lg:col-span-5 space-y-5">
+      <div class="bg-panel border border-border rounded-xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold text-white uppercase tracking-wider font-mono">1. Select Filing Scenario</h2>
+          <span class="text-[11px] text-sky-400 font-mono">2M Token Context</span>
+        </div>
+
+        <div class="space-y-2">
+          <button onclick="loadScenario('clean_titan')" id="btn-clean" class="w-full text-left p-3 rounded-lg border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 transition flex items-start justify-between">
+            <div>
+              <div class="text-white text-xs font-bold">AlphaCorp Technologies (ALPH)</div>
+              <div class="text-[11px] text-slate-400">Clean 10-K, record margins, positive cash flow</div>
+            </div>
+            <span class="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">BENCHMARK</span>
+          </button>
+
+          <button onclick="loadScenario('distressed_divergence')" id="btn-distressed" class="w-full text-left p-3 rounded-lg border border-border bg-card hover:border-crimson/40 hover:bg-crimson/5 transition flex items-start justify-between">
+            <div>
+              <div class="text-white text-xs font-bold">Apex OmniCommerce (APEX)</div>
+              <div class="text-[11px] text-slate-400">Going concern, SEC inquiry, cash disconnect</div>
+            </div>
+            <span class="text-[10px] font-mono bg-crimson/20 text-crimson-400 px-2 py-0.5 rounded">RED FLAGS</span>
+          </button>
+        </div>
+
+        <!-- Form fields inspection -->
+        <div class="space-y-3 pt-2 text-xs">
+          <div>
+            <label class="block text-slate-400 font-mono mb-1">Company / Ticker</label>
+            <input type="text" id="input-ticker" value="ALPH — AlphaCorp Technologies" class="w-full bg-card border border-border rounded-lg p-2.5 text-white font-mono" readonly>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-mono mb-1">SEC 10-K Item 1A / MD&A Excerpt</label>
+            <textarea id="input-filing" rows="3" class="w-full bg-card border border-border rounded-lg p-2.5 text-slate-300 font-mono text-[11px]" readonly></textarea>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-mono mb-1">Earnings Call Q&A Audio Transcript</label>
+            <textarea id="input-transcript" rows="2" class="w-full bg-card border border-border rounded-lg p-2.5 text-slate-300 font-mono text-[11px]" readonly></textarea>
+          </div>
+
+          <div>
+            <label class="block text-slate-400 font-mono mb-1">Multimodal Chart Key Metrics</label>
+            <div id="chart-metrics-box" class="bg-card border border-border rounded-lg p-2.5 font-mono text-[11px] space-y-1 text-slate-300">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <button onclick="runAudit()" id="btn-run" class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-sm tracking-wide shadow-lg shadow-sky-500/25 flex items-center justify-center space-x-2 transition">
+          <span id="btn-spinner" class="hidden animate-spin">🌀</span>
+          <span id="btn-label">Dispatch Autonomous Multimodal Audit</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Live Audit Terminal (7 cols) -->
+    <div class="lg:col-span-7 space-y-5">
+      <div class="bg-panel border border-border rounded-xl p-5 space-y-4 min-h-[580px] flex flex-col justify-between">
+        
+        <div>
+          <!-- Header stats -->
+          <div class="flex items-center justify-between border-b border-border pb-4">
+            <div>
+              <span class="text-[11px] text-slate-400 font-mono uppercase tracking-wider">Audit Report Status</span>
+              <h3 id="report-title" class="text-white font-bold text-base mt-0.5">Ready for Analysis</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-slate-400 font-mono">Financial Health Score</span>
+              <div id="health-score" class="text-2xl font-black font-mono text-slate-500">--/100</div>
+            </div>
+          </div>
+
+          <!-- Executive Summary Callout -->
+          <div id="summary-card" class="mt-4 p-4 rounded-lg border border-border bg-card/60 text-xs text-slate-300 space-y-1 hidden">
+            <div class="flex items-center space-x-2">
+              <span id="risk-pill" class="text-[10px] font-bold font-mono uppercase px-2 py-0.5 rounded">STATUS</span>
+              <span class="font-bold text-white" id="summary-header">Executive Summary</span>
+            </div>
+            <p id="summary-text" class="text-slate-300 leading-relaxed"></p>
+          </div>
+
+          <!-- Multimodal Agent Findings Stream -->
+          <div class="mt-4 space-y-3">
+            <h4 class="text-xs font-bold text-slate-400 uppercase font-mono tracking-wider">Agent Fleet Evidence Stream</h4>
+            <div id="findings-container" class="space-y-3 max-h-[340px] overflow-y-auto pr-1">
+              <div class="p-8 text-center text-slate-500 font-mono text-xs">
+                Select a scenario and click "Dispatch Autonomous Multimodal Audit" to simulate Gemini 2.5 parallel processing.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendations Footer -->
+        <div id="recommendations-box" class="border-t border-border pt-3 mt-4 text-xs font-mono hidden">
+          <div class="text-slate-400 font-bold mb-1">Strategic Audit Directives:</div>
+          <ul id="recommendations-list" class="list-disc list-inside space-y-1 text-slate-300"></ul>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-border py-4 px-6 text-center text-xs text-slate-500 font-mono">
+    OmniFinancial · Developed by Arif Alam (iamarifalam@gmail.com) for Google Gemini API Developer Competition · Licensed under MIT
+  </footer>
+
+  <script>
+    let sampleFilings = [];
+    let currentScenario = null;
+
+    async function init() {
+      try {
+        const resp = await fetch('/api/sample/filings');
+        sampleFilings = await resp.json();
+        if (sampleFilings.length > 0) {
+          loadScenario('clean_titan');
+        }
+      } catch (e) {
+        console.error('Failed to load sample filings', e);
+      }
+    }
+
+    function loadScenario(id) {
+      currentScenario = sampleFilings.find(f => f.id === id);
+      if (!currentScenario) return;
+
+      document.getElementById('input-ticker').value = `${currentScenario.ticker} — ${currentScenario.company_name}`;
+      document.getElementById('input-filing').value = currentScenario.sections.map(s => `[${s.item_id}] (p.${s.page_numbers.join(',')}): ${s.content}`).join('\n\n');
+      document.getElementById('input-transcript').value = currentScenario.earnings_transcript || '';
+
+      const m = currentScenario.charts[0]?.key_metrics || {};
+      document.getElementById('chart-metrics-box').innerHTML = `
+        <div>• Net Income: $${(m.net_income_usd || 0).toLocaleString()}</div>
+        <div>• Operating Cash Flow: $${(m.operating_cash_flow_usd || 0).toLocaleString()}</div>
+        <div>• Debt-to-Equity: ${m.debt_to_equity_ratio || 0}x</div>
+        <div>• Gross Margin: ${m.gross_margin_pct || 0}% (Previous: ${m.previous_gross_margin_pct || 0}%)</div>
+      `;
+
+      // Highlight active button
+      document.getElementById('btn-clean').className = id === 'clean_titan' 
+        ? 'w-full text-left p-3 rounded-lg border border-emerald-500/50 bg-emerald-500/10 transition flex items-start justify-between'
+        : 'w-full text-left p-3 rounded-lg border border-border bg-card transition flex items-start justify-between';
+      
+      document.getElementById('btn-distressed').className = id === 'distressed_divergence'
+        ? 'w-full text-left p-3 rounded-lg border border-crimson/50 bg-crimson/10 transition flex items-start justify-between'
+        : 'w-full text-left p-3 rounded-lg border border-border bg-card transition flex items-start justify-between';
+    }
+
+    async function runAudit() {
+      if (!currentScenario) return;
+
+      const btn = document.getElementById('btn-run');
+      const spinner = document.getElementById('btn-spinner');
+      const label = document.getElementById('btn-label');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      label.innerText = 'Evaluating 2M Token Context & Charts...';
+
+      try {
+        const resp = await fetch('/api/audit/filing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentScenario)
+        });
+        const report = await resp.json();
+        renderReport(report);
+      } catch (err) {
+        alert('Audit execution failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        label.innerText = 'Dispatch Autonomous Multimodal Audit';
+      }
+    }
+
+    function renderReport(report) {
+      document.getElementById('report-title').innerText = `${report.company_name} (${report.ticker}) — Report #${report.report_id}`;
+      
+      const scoreElem = document.getElementById('health-score');
+      scoreElem.innerText = `${report.overall_health_score}/100`;
+
+      const summaryCard = document.getElementById('summary-card');
+      const riskPill = document.getElementById('risk-pill');
+      const summaryText = document.getElementById('summary-text');
+      summaryCard.classList.remove('hidden');
+
+      if (report.risk_level === 'LOW') {
+        scoreElem.className = 'text-2xl font-black font-mono text-emerald-400';
+        riskPill.className = 'text-[10px] font-bold font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+        riskPill.innerText = 'LOW RISK';
+      } else if (report.risk_level === 'MODERATE') {
+        scoreElem.className = 'text-2xl font-black font-mono text-amber-400';
+        riskPill.className = 'text-[10px] font-bold font-mono uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        riskPill.innerText = 'MODERATE RISK';
+      } else {
+        scoreElem.className = 'text-2xl font-black font-mono text-crimson';
+        riskPill.className = 'text-[10px] font-bold font-mono uppercase px-2 py-0.5 rounded bg-crimson/20 text-crimson-300 border border-crimson/30';
+        riskPill.innerText = report.risk_level + ' RISK';
+      }
+
+      summaryText.innerText = report.executive_summary;
+
+      // Findings
+      const container = document.getElementById('findings-container');
+      container.innerHTML = report.findings.map(f => {
+        let badgeColor = 'bg-sky-500/10 text-sky-400 border-sky-500/30';
+        if (f.severity === 'HIGH') badgeColor = 'bg-crimson/20 text-crimson-300 border-crimson/40';
+        if (f.severity === 'MEDIUM') badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+        if (f.severity === 'POSITIVE') badgeColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
+
+        return `
+          <div class="p-3 rounded-lg border border-border bg-card space-y-1.5 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">${f.finding_title}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${badgeColor}">${f.severity}</span>
+            </div>
+            <p class="text-slate-300">${f.narrative}</p>
+            <div class="flex items-center space-x-3 text-[11px] font-mono text-slate-400 pt-1 border-t border-border/50">
+              <span>Agent: <strong class="text-slate-300">${f.agent_name}</strong></span>
+              ${f.cited_page ? `<span>Page: <strong class="text-sky-400">${f.cited_page}</strong></span>` : ''}
+              <span>Confidence: <strong class="text-slate-300">${(f.confidence * 100).toFixed(0)}%</strong></span>
+            </div>
+            <div class="bg-panel p-2 rounded text-[11px] font-mono text-slate-400 italic">
+              "${f.evidence_quote}"
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Recommendations
+      const recBox = document.getElementById('recommendations-box');
+      const recList = document.getElementById('recommendations-list');
+      recBox.classList.remove('hidden');
+      recList.innerHTML = report.recommendations.map(r => `<li>${r}</li>`).join('');
+    }
+
+    init();
+  </script>
+</body>
+</html>
